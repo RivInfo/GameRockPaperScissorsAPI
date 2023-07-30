@@ -8,9 +8,9 @@ namespace GameAPI.DataStorage;
 public class GameLobbysStorage : IGameLobbysStorage
 {
     private readonly ISettingsServices _settings;
-    
+
     private ConcurrentDictionary<Guid, GameLobby> _gameLobbys = new();
-    
+
     public GameLobbysStorage(ISettingsServices settings)
     {
         _settings = settings;
@@ -37,22 +37,22 @@ public class GameLobbysStorage : IGameLobbysStorage
         return null;
     }
 
-    public (bool isSucces, long playerId) TryAddSubjectToLobby(Guid lobbyId ,ISubject subject)
+    public (bool isSucces, long playerId) TryAddSubjectToLobby(Guid lobbyId, ISubject subject)
     {
         if (_gameLobbys.ContainsKey(lobbyId))
         {
-            if(_gameLobbys[lobbyId].TrySetSecondSubject(subject))
+            if (_gameLobbys[lobbyId].TrySetSecondSubject(subject))
                 return (true, subject.Id);
         }
 
         return (false, 0);
     }
 
-    public bool TryRemoveSubjectFromLobby(ISubject subject, Guid lobbyId)
+    public bool TryRemoveSubjectFromLobby(long subjectId, Guid lobbyId)
     {
         if (_gameLobbys.ContainsKey(lobbyId))
         {
-            return _gameLobbys[lobbyId].TryRemoveSubject(subject);
+            return _gameLobbys[lobbyId].TryRemoveSubject(subjectId);
         }
 
         return false;
@@ -65,6 +65,14 @@ public class GameLobbysStorage : IGameLobbysStorage
             _gameLobbys[lobbyId].ResetLobby();
             return true;
         }
+
+        return false;
+    }
+
+    public bool TryTurn(Guid lobbyId, long playerId, GameSkills turn)
+    {
+        if (_gameLobbys.ContainsKey(lobbyId))
+            return _gameLobbys[lobbyId].TrySubjectTurn(playerId, turn);
 
         return false;
     }

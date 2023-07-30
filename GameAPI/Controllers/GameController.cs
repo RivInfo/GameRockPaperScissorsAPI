@@ -1,4 +1,5 @@
 using GameAPI.DataStorage;
+using GameAPI.GameModels;
 using GameAPI.GameModels.Players;
 using GameAPI.ResponseModels;
 using Microsoft.AspNetCore.Mvc;
@@ -57,5 +58,23 @@ public class GameController : Controller
 
         return Ok(response);
     }
+    
+    [HttpGet("{lobbyId:guid}/user/{userId:long}/{turn}")]
+    public async Task<ActionResult> Turn(Guid lobbyId, long userId, GameSkills turn)
+    {
+        
 
+        var result = _lobbysStorage.(lobbyId, subject);
+
+        if (result.isSucces == false)
+            return NotFound();
+        
+        AddPlayerResponse response = new AddPlayerResponse
+        {
+            LobbyId = lobbyId,
+            PlayerId = result.playerId
+        };
+
+        return Ok(response);
+    }
 }

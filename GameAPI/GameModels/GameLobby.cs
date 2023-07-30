@@ -50,16 +50,16 @@ public class GameLobby
         return true;
     }
 
-    public bool TryRemoveSubject(ISubject subject)
+    public bool TryRemoveSubject(long subjectId)
     {
-        if (MainSubject is not null && MainSubject.Id == subject.Id)
+        if (MainSubject is not null && MainSubject.Id == subjectId)
         {
             MainSubject = SecondSubject;
             SecondSubject = null;
             return true;
         }
         
-        if (SecondSubject is not null && SecondSubject.Id == subject.Id)
+        if (SecondSubject is not null && SecondSubject.Id == subjectId)
         {
             SecondSubject = null;
             return true;
@@ -68,7 +68,7 @@ public class GameLobby
         return false;
     }
 
-    public bool TrySubjectTurn(ISubject subject, GameSkills skills)
+    public bool TrySubjectTurn(long subjectId, GameSkills skills)
     {
         if (LobbyIsFull() == false) return false;
 
@@ -80,12 +80,12 @@ public class GameLobby
             MoveSecondSubject = true;
         }
         
-        if (MainSubject!.Id == subject.Id && MoveMainSubject == false)
+        if (MainSubject!.Id == subjectId && MoveMainSubject == false)
         {
             MainSubjectSkills = skills;
             MoveMainSubject = true;
         }
-        else if (SecondSubject!.Id == subject.Id && MoveSecondSubject == false)
+        else if (SecondSubject!.Id == subjectId && MoveSecondSubject == false)
         {
             SecondSubjectSkills = skills;
             MoveSecondSubject = true;
