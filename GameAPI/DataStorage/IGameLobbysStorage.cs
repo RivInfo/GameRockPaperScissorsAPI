@@ -11,7 +11,7 @@ public interface IGameLobbysStorage
     public IEnumerable<Guid> GetAllLobbysId();
     public DateTime GetStartTime(Guid lobbyId);
     public List<RoundStat> GetLobbyStat(Guid lobbyId);
-    public (bool isSucces, long playerId) TryAddSubjectToLobby(Guid lobbyId ,ISubject subject);
+    public (bool isSucces, long playerId) TryAddSubjectToLobby(Guid lobbyId, ISubject subject);
     public bool TryRemoveSubjectFromLobby(long subjectId, Guid lobbyId);
     public bool TryResetGame(Guid lobbyId);
     public bool TryTurn(Guid lobbyId, long playerId, GameSkills turn);

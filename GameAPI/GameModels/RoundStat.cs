@@ -16,6 +16,6 @@ public class RoundStat
     public ISubject SecondSubject { get; }
 
     public int Round { get; }
-    
+
     public GameRoundResult RoundResult { get; }
 }

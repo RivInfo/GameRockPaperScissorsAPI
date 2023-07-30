@@ -14,8 +14,8 @@ public class SettingsServices : ISettingsServices
         TimeToRemoveLobbys = _settings.TimeToRemoveLobbys;
         RoundsCount = _settings.RoundsCount;
     }
-    
+
     public int TimeDelayCheckingGameLobbys { get; }
-    public int TimeToRemoveLobbys { get;}
+    public int TimeToRemoveLobbys { get; }
     public int RoundsCount { get; }
 }

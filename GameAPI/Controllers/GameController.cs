@@ -107,7 +107,7 @@ public class GameController : Controller
         return Ok();
     }
     
-    [HttpGet("{lobbyId:guid}/removePlayer/{playerId:long}")]
+    [HttpDelete("{lobbyId:guid}/removePlayer/{playerId:long}")]
     public async Task<ActionResult> RemoveGame(Guid lobbyId, long playerId)
     {
         var result = _lobbysStorage.TryRemoveSubjectFromLobby(playerId, lobbyId);

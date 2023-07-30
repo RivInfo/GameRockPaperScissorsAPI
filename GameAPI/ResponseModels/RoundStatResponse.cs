@@ -13,9 +13,10 @@ public class RoundStatResponse
         RoundResult = roundResult;
     }
 
-    public string Player1Name { get;}
+    public string Player1Name { get; }
     public string Player2Name { get; }
     public int Round { get; }
+
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public GameRoundResult RoundResult { get; }
 }

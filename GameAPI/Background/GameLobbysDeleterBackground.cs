@@ -16,7 +16,7 @@ public class GameLobbysDeleterBackground : BackgroundService
         _settings = settings;
         _lobbysStorage = lobbysStorage;
     }
-    
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
@@ -27,17 +27,17 @@ public class GameLobbysDeleterBackground : BackgroundService
 
             foreach (var lobbyId in _lobbysStorage.GetAllLobbysId())
             {
-                 _lobbysStorage.GetStartTime(lobbyId);
+                _lobbysStorage.GetStartTime(lobbyId);
 
-                 TimeSpan resTime = nowTime - _lobbysStorage.GetStartTime(lobbyId);
+                TimeSpan resTime = nowTime - _lobbysStorage.GetStartTime(lobbyId);
 
-                 if (resTime >= minNonDeleteTime)
-                 {
-                     if(_lobbysStorage.TryDeleteLobby(lobbyId))
+                if (resTime >= minNonDeleteTime)
+                {
+                    if (_lobbysStorage.TryDeleteLobby(lobbyId))
                         _logger.LogInformation("Server {0} is remove", lobbyId);
-                     else
-                         _logger.LogInformation("Server {0} is NOT removing", lobbyId);
-                 }
+                    else
+                        _logger.LogInformation("Server {0} is NOT removing", lobbyId);
+                }
             }
 
             await Task.Delay(_settings.TimeDelayCheckingGameLobbys, stoppingToken);

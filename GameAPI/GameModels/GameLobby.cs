@@ -12,38 +12,38 @@ public class GameLobby
         _maxRoundCounts = maxRoundCounts;
         GameStartTime = DateTime.UtcNow;
     }
-    
+
     public Guid LobbyId { get; init; }
 
-    public DateTime GameStartTime { get; set; }
-    
-    public ISubject? MainSubject { get; set; }
-    public ISubject? SecondSubject { get; set; }
+    public DateTime GameStartTime { get; private set; }
 
-    public int Round { get; set; }
-    
-    public bool MoveMainSubject  { get; set; }
-    public bool MoveSecondSubject { get; set; }
-    
-    public GameSkills MainSubjectSkills { get; set;}
-    public GameSkills SecondSubjectSkills { get; set;}
+    public ISubject? MainSubject { get; private set; }
+    public ISubject? SecondSubject { get; private set; }
+
+    public int Round { get; private set; }
+
+    public bool MoveMainSubject { get; private set; }
+    public bool MoveSecondSubject { get; private set; }
+
+    public GameSkills MainSubjectSkills { get; private set; }
+    public GameSkills SecondSubjectSkills { get; private set; }
 
     public List<RoundStat> RoundsStats { get; } = new();
-    
+
     public bool LobbyIsFull() => MainSubject is not null && SecondSubject is not null;
-    
+
     private bool TryRoundMove()
     {
         if (MoveSecondSubject == false || MoveMainSubject == false) return false;
 
         RoundResult();
         return true;
-    } 
+    }
 
     public bool TrySetMainSubject(ISubject subject)
     {
         if (MainSubject is not null) return false;
-        
+
         MainSubject = subject;
         return true;
     }
@@ -51,9 +51,9 @@ public class GameLobby
     public bool TrySetSecondSubject(ISubject subject)
     {
         if (TrySetMainSubject(subject)) return true;
-        
+
         if (SecondSubject is not null) return false;
-            
+
         SecondSubject = subject;
         return true;
     }
@@ -66,7 +66,7 @@ public class GameLobby
             SecondSubject = null;
             return true;
         }
-        
+
         if (SecondSubject is not null && SecondSubject.Id == subjectId)
         {
             SecondSubject = null;
@@ -87,7 +87,7 @@ public class GameLobby
             SecondSubjectSkills = (GameSkills)new Random().Next((int)GameSkills.Scissors);
             MoveSecondSubject = true;
         }
-        
+
         if (MainSubject!.Id == subjectId && MoveMainSubject == false)
         {
             MainSubjectSkills = skills;
@@ -95,17 +95,16 @@ public class GameLobby
             TryRoundMove();
             return true;
         }
-        else if (SecondSubject!.Id == subjectId && MoveSecondSubject == false)
+
+        if (SecondSubject!.Id == subjectId && MoveSecondSubject == false)
         {
             SecondSubjectSkills = skills;
             MoveSecondSubject = true;
             TryRoundMove();
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     public void ResetLobby()
@@ -119,11 +118,11 @@ public class GameLobby
 
     private void RoundResult()
     {
-        RoundsStats.Add(new RoundStat(MainSubject!, SecondSubject!, Round, 
+        RoundsStats.Add(new RoundStat(MainSubject!, SecondSubject!, Round,
             GameLogic.ResultFromTwoSubjectSkills(MainSubjectSkills, SecondSubjectSkills)));
 
         Round++;
-        
+
         MoveMainSubject = false;
         MoveSecondSubject = false;
     }
