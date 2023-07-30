@@ -2,10 +2,10 @@ namespace GameAPI.GameModels.Players;
 
 public class Player : ISubject
 {
-    public Player(string name, long guid)
+    public Player(string name)
     {
         Name = name;
-        Id = guid;
+        Id = new Random().NextInt64();
     }
 
     public long Id { get; }
