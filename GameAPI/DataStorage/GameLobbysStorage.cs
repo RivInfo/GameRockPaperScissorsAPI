@@ -16,56 +16,89 @@ public class GameLobbysStorage : IGameLobbysStorage
         _settings = settings;
     }
 
-    public (bool isSucces, Guid lobbyId, Guid gameId, long playerId) TryAddLobby(ISubject subject)
+    public (bool isSucces, Guid lobbyId, long playerId) TryAddLobby(ISubject subject)
     {
-        GameLobby gameLobby = new(_settings)
+        GameLobby gameLobby = new(_settings.RoundsCount)
         {
-            LobbyId = Guid.NewGuid(),
-            MainSubject = subject,
-            GameId = Guid.NewGuid()
+            LobbyId = Guid.NewGuid()
         };
+        gameLobby.TrySetMainSubject(subject);
         _gameLobbys.TryAdd(gameLobby.LobbyId, gameLobby);
-        return (true, gameLobby.LobbyId, gameLobby.GameId , subject.Id);
+        return (true, gameLobby.LobbyId, subject.Id);
     }
-    
-    public (bool isSucces, Guid gameId, long playerId) TryAddSubjectToLobby(Guid lobbyId ,ISubject subject)
+
+    public List<RoundStat>? GetLobbyStat(Guid lobbyId)
     {
         if (_gameLobbys.ContainsKey(lobbyId))
         {
-            _gameLobbys[lobbyId].SecondSubject = subject;
-            return (true, _gameLobbys[lobbyId].GameId, subject.Id);
+            return _gameLobbys[lobbyId].RoundsStats;
         }
 
-        return (false, Guid.Empty, 0);
+        return null;
     }
 
-    public void DeleteLobby(Guid id)
+    public (bool isSucces, long playerId) TryAddSubjectToLobby(Guid lobbyId ,ISubject subject)
     {
-        throw new NotImplementedException();
+        if (_gameLobbys.ContainsKey(lobbyId))
+        {
+            if(_gameLobbys[lobbyId].TrySetSecondSubject(subject))
+                return (true, subject.Id);
+        }
+
+        return (false, 0);
     }
 
-    public GameLobby GetLobbyInfo(Guid id)
+    public bool TryRemoveSubjectFromLobby(ISubject subject, Guid lobbyId)
     {
-        throw new NotImplementedException();
+        if (_gameLobbys.ContainsKey(lobbyId))
+        {
+            return _gameLobbys[lobbyId].TryRemoveSubject(subject);
+        }
+
+        return false;
     }
 
-    public DateTime GetStartTime()
+    public bool TryResetGame(Guid lobbyId)
     {
-        throw new NotImplementedException();
+        if (_gameLobbys.ContainsKey(lobbyId))
+        {
+            _gameLobbys[lobbyId].ResetLobby();
+            return true;
+        }
+
+        return false;
     }
 
-    public List<StepInfo> GetLobbyStat(Guid id)
+    public bool TryDeleteLobby(Guid lobbyId)
     {
-        throw new NotImplementedException();
+        if (_gameLobbys.ContainsKey(lobbyId))
+            return _gameLobbys.TryRemove(lobbyId, out GameLobby _);
+
+        return false;
     }
 
-    public bool RemoveSubject(ISubject subject)
+    public GameLobby? GetLobbyInfo(Guid lobbyId)
     {
-        throw new NotImplementedException();
+        if (_gameLobbys.ContainsKey(lobbyId))
+        {
+            return _gameLobbys[lobbyId];
+        }
+
+        return null;
     }
 
-    public Guid ResetGame(Guid lobbyId)
+    public IEnumerable<Guid> GetAllLobbysId()
     {
-        throw new NotImplementedException();
+        return _gameLobbys.Select(x => x.Key);
+    }
+
+    public DateTime GetStartTime(Guid lobbyId)
+    {
+        if (_gameLobbys.ContainsKey(lobbyId))
+        {
+            return _gameLobbys[lobbyId].GameStartTime;
+        }
+
+        return new DateTime();
     }
 }

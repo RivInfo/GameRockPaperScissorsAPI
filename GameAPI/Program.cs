@@ -10,7 +10,6 @@ builder.Services.Configure<ServiceSettings>
 builder.Services.AddSingleton<ISettingsServices, SettingsServices>();
 
 builder.Services.AddSingleton<IGameLobbysStorage, GameLobbysStorage>();
-builder.Services.AddSingleton<IGameResultsStorage, GameResultsStorage>();
 
 builder.Services.AddHostedService<GameLobbysBackground>();
 

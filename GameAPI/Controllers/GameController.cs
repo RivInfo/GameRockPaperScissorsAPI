@@ -25,10 +25,9 @@ public class GameController : Controller
         if (result.isSucces == false)
             return NotFound();
 
-        AddPlayerResponse response = new AddPlayerResponse()
+        AddPlayerResponse response = new AddPlayerResponse
         {
             LobbyId = result.lobbyId,
-            GameId = result.gameId,
             PlayerId = result.playerId
         };
         
@@ -50,10 +49,9 @@ public class GameController : Controller
         if (result.isSucces == false)
             return NotFound();
         
-        AddPlayerResponse response = new AddPlayerResponse()
+        AddPlayerResponse response = new AddPlayerResponse
         {
             LobbyId = lobbyId,
-            GameId = result.gameId,
             PlayerId = result.playerId
         };
 

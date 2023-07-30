@@ -2,7 +2,7 @@ namespace GameAPI.GameModels;
 
 public enum GameRoundResult
 {
-    WinMain,
+    WinFirst,
     WinSecond,
     Draw
 }
