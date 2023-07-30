@@ -36,7 +36,7 @@ public class GameController : Controller
     }
     
     [HttpGet("{lobbyId:guid}/join/{name}&{isBot:bool}")]
-    public async Task<ActionResult> JoinToRoom(Guid lobbyId, string name, bool isBot = false)
+    public async Task<ActionResult<AddPlayerResponse>> JoinToRoom(Guid lobbyId, string name, bool isBot = false)
     {
         ISubject subject;
         
@@ -62,19 +62,59 @@ public class GameController : Controller
     [HttpGet("{lobbyId:guid}/user/{userId:long}/{turn}")]
     public async Task<ActionResult> Turn(Guid lobbyId, long userId, GameSkills turn)
     {
-        
+        var result = _lobbysStorage.TryTurn(lobbyId, userId, turn);
 
-        var result = _lobbysStorage.(lobbyId, subject);
-
-        if (result.isSucces == false)
+        if (result == false)
             return NotFound();
-        
-        AddPlayerResponse response = new AddPlayerResponse
-        {
-            LobbyId = lobbyId,
-            PlayerId = result.playerId
-        };
+
+        return Ok();
+    }
+    
+    [HttpGet("{lobbyId:guid}/stat")]
+    public async Task<ActionResult> GetStat(Guid lobbyId)
+    {
+        var result = _lobbysStorage.GetLobbyStat(lobbyId);
+
+        if (result is null)
+            return NotFound();
+
+        var response = result
+            .Select(x => new RoundStatResponse(x.MainSubject.Name, 
+                x.SecondSubject.Name, x.Round, x.RoundResult));
 
         return Ok(response);
+    }
+    
+    [HttpGet("{lobbyId:guid}/resetGame")]
+    public async Task<ActionResult> ResetGame(Guid lobbyId)
+    {
+        var result = _lobbysStorage.TryResetGame(lobbyId);
+
+        if (result == false)
+            return NotFound();
+
+        return Ok();
+    }
+    
+    [HttpGet("{lobbyId:guid}/removeGame")]
+    public async Task<ActionResult> RemoveGame(Guid lobbyId)
+    {
+        var result = _lobbysStorage.TryDeleteLobby(lobbyId);
+
+        if (result == false)
+            return NotFound();
+
+        return Ok();
+    }
+    
+    [HttpGet("{lobbyId:guid}/removePlayer/{playerId:long}")]
+    public async Task<ActionResult> RemoveGame(Guid lobbyId, long playerId)
+    {
+        var result = _lobbysStorage.TryRemoveSubjectFromLobby(playerId, lobbyId);
+
+        if (result == false)
+            return NotFound();
+
+        return Ok();
     }
 }

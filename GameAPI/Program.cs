@@ -11,7 +11,7 @@ builder.Services.AddSingleton<ISettingsServices, SettingsServices>();
 
 builder.Services.AddSingleton<IGameLobbysStorage, GameLobbysStorage>();
 
-builder.Services.AddHostedService<GameLobbysBackground>();
+builder.Services.AddHostedService<GameLobbysDeleterBackground>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

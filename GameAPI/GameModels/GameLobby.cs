@@ -27,10 +27,18 @@ public class GameLobby
     
     public GameSkills MainSubjectSkills { get; set;}
     public GameSkills SecondSubjectSkills { get; set;}
-    
-    public List<RoundStat> RoundsStats { get; set; }
+
+    public List<RoundStat> RoundsStats { get; } = new();
     
     public bool LobbyIsFull() => MainSubject is not null && SecondSubject is not null;
+    
+    private bool TryRoundMove()
+    {
+        if (MoveSecondSubject == false || MoveMainSubject == false) return false;
+
+        RoundResult();
+        return true;
+    } 
 
     public bool TrySetMainSubject(ISubject subject)
     {
@@ -84,24 +92,20 @@ public class GameLobby
         {
             MainSubjectSkills = skills;
             MoveMainSubject = true;
+            TryRoundMove();
+            return true;
         }
         else if (SecondSubject!.Id == subjectId && MoveSecondSubject == false)
         {
             SecondSubjectSkills = skills;
             MoveSecondSubject = true;
+            TryRoundMove();
+            return true;
         }
         else
         {
             return false;
         }
-
-        if (MoveSecondSubject && MoveMainSubject)
-        {
-            RoundResult();
-            return true;
-        }
-
-        return false;
     }
 
     public void ResetLobby()
@@ -115,7 +119,7 @@ public class GameLobby
 
     private void RoundResult()
     {
-        RoundsStats.Add(new RoundStat(MainSubject!, SecondSubject!,Round, 
+        RoundsStats.Add(new RoundStat(MainSubject!, SecondSubject!, Round, 
             GameLogic.ResultFromTwoSubjectSkills(MainSubjectSkills, SecondSubjectSkills)));
 
         Round++;
